@@ -94,6 +94,7 @@ class Luna16Dataset(Dataset):
         return len(self.center_frame)
 
     def __getitem__(self, idx):
+        # print(idx)
         cube_name = os.path.join(self.root_dir, 'subset'+self.center_frame[idx][5],
                                  self.center_frame[idx][0]+'.mhd')
         numpyImage, numpyOrigin, numpySpacing = load_itk_image(cube_name)
@@ -102,15 +103,20 @@ class Luna16Dataset(Dataset):
         voxelCoord = worldToVoxelCoord(worldCoord, numpyOrigin, numpySpacing)
         voxelWidth = 40
         voxelDepth = 24
+        numpyImage = np.lib.pad(numpyImage, ((voxelDepth // 2, voxelDepth // 2),
+                   (voxelWidth // 2, voxelWidth // 2), (voxelWidth // 2, voxelWidth // 2)), 'wrap')
         coord_start = [0, 0, 0]
         coord_end = [0, 0, 0]
-        coord_start[0] = int(voxelCoord[0] - voxelDepth / 2.0)
-        coord_end[0] = int(voxelCoord[0] + voxelDepth / 2.0)
-        coord_start[1] = int(voxelCoord[1] - voxelWidth / 2.0)
-        coord_end[1] = int(voxelCoord[1] + voxelWidth / 2.0)
-        coord_start[2] = int(voxelCoord[2] - voxelWidth / 2.0)
-        coord_end[2] = int(voxelCoord[2] + voxelWidth / 2.0)
+        coord_start[0] = int(voxelCoord[0])#  - voxelDepth / 2.0)
+        coord_end[0] = int(voxelCoord[0]) + voxelDepth #  / 2.0)
+        coord_start[1] = int(voxelCoord[1])  # - voxelDepth / 2.0)
+        coord_end[1] = int(voxelCoord[1]) + voxelWidth  # / 2.0)
+        coord_start[2] = int(voxelCoord[2])  # - voxelDepth / 2.0)
+        coord_end[2] = int(voxelCoord[2]) + voxelWidth  # / 2.0)
         patch = numpyImage[coord_start[0]:coord_end[0], coord_start[1]:coord_end[1], coord_start[2]:coord_end[2]]
+        # if (patch.shape[0] != 24):
+#             print('zero shape ' + str(coord_start[0]) + ' ' + str(coord_end[0]))
+        # print(patch.shape)
         patch = normalizePlanes(patch)
         label = int(cand[4])
         sample = {'cube':patch, 'label': label}
@@ -149,8 +155,7 @@ class RandomCrop(object):
             self.output_size = output_size
 
     def __call__(self, sample):
-        # z = np.random.randint(0, 5)
-        z = 2
+        z = np.random.randint(0, 5)
         x = np.random.randint(0, 5)
         y = np.random.randint(0, 5)
         cube, label = sample['cube'], sample['label']
@@ -161,8 +166,8 @@ class ToTensor(object):
     def __call__(self, sample):
         cube, label = sample['cube'], sample['label']
         cube = np.expand_dims(cube,0)
-        print('cube\' s size is '+cube.size(), file=f)
-        print('label\' s type is ' + type(label), file=f)
+        # print('cube\' s size is '+str(cube.shape))
+        # print('label\' s type is ' + str(type(label)), file=f)
         return {'cube':torch.from_numpy(cube.copy()).float(), 'label': label}
 
 # flip = RandomFlip((20,36,36))
