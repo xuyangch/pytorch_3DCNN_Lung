@@ -9,7 +9,7 @@ import SimpleITK as sitk
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
 import csv
-import scipy
+from constants import *
 
 # Ignore warnings
 import warnings
@@ -161,6 +161,8 @@ class ToTensor(object):
     def __call__(self, sample):
         cube, label = sample['cube'], sample['label']
         cube = np.expand_dims(cube,0)
+        print('cube\' s size is '+cube.size(), file=f)
+        print('label\' s type is ' + type(label), file=f)
         return {'cube':torch.from_numpy(cube.copy()).float(), 'label': label}
 
 # flip = RandomFlip((20,36,36))

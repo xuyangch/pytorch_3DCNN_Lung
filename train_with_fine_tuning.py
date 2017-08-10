@@ -6,8 +6,8 @@ from torch.autograd import Variable
 
 if __name__ == '__main__':
     # set constant
-    root_path = '/Users/hyacinth/Downloads/luna16/'
-    cand_path = '/Users/hyacinth/Downloads/luna16/candidates.csv'
+    # root_path = '/Users/hyacinth/Downloads/luna16/'
+    # cand_path = '/Users/hyacinth/Downloads/luna16/candidates.csv'
     alpha = 0.25
 
     fine_tune_dataset = Luna16Dataset(csv_file=cand_path, root_dir=root_path, subset=[0],
