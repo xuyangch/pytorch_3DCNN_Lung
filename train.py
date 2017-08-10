@@ -10,6 +10,8 @@ import torch.optim as optim
 import torch.nn as nn
 from torch.autograd import Variable
 from constants import *
+import matplotlib
+
 
 if __name__ == '__main__':
     # root_path = '/Users/hyacinth/Downloads/luna16/'
@@ -27,7 +29,7 @@ if __name__ == '__main__':
     classes = {'Not Nodule', 'Is Nodule'}
 
     net = NoduleNet()
-    net = net.cuda()
+    net = net#.cuda()
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters())
     for epoch in range(1):
@@ -50,7 +52,7 @@ if __name__ == '__main__':
                 print('batch ' + str(cnt))
                 inputs, labels = data['cube'], data['label']
 
-                inputs, labels = Variable(inputs.cuda()), Variable(labels.cuda())
+                inputs, labels = Variable(inputs), Variable(labels)
                 # inputs = inputs.float()
                 # labels = labels.float()
                 optimizer.zero_grad()

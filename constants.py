@@ -1,5 +1,7 @@
-root_path = '/home/hyacinth/project/luna16/'
-cand_path = '/home/hyacinth/project/luna16/candidates.csv'
+root_path = '/Users/hyacinth/Downloads/TUTORIAL/data/'
+cand_path = '/Users/hyacinth/Downloads/TUTORIAL/data/candidates.csv'
+# root_path = '/home/hyacinth/project/luna16/'
+# cand_path = '/home/hyacinth/project/luna16/candidates.csv'
 f = open('logfile', 'w')
 alpha = 0.25
 beta = 25

@@ -116,13 +116,6 @@ class Luna16Dataset(Dataset):
         patch = numpyImage[coord_start[0]:coord_end[0], coord_start[1]:coord_end[1], coord_start[2]:coord_end[2]]
         patch = normalizePlanes(patch)
         label = int(cand[4])
-
-        fig = plt.figure()
-        img = sample_batched['cube']
-        img = img[0][0][10].numpy()
-        plt.imshow(img, cmap='gray')
-        plt.show()
-
         sample = {'cube':patch, 'label': label}
 
         if self.transform:
