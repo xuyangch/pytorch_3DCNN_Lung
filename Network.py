@@ -44,6 +44,12 @@ class NoduleNet(nn.Module):
             nn.Dropout(),
             nn.Linear(512, 2),
         )
+        for m in self.modules():
+            if isinstance(m, nn.Conv3d):
+                torch.nn.init.kaiming_normal(m.weight)
+            if isinstance(m, nn.Linear):
+                torch.nn.init.kaiming_normal(m.weight)
+
     def forward(self,x):
         x = self.feature(x)
         x = x.view(x.size(0),128)
