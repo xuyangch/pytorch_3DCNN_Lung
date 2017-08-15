@@ -3,7 +3,8 @@ import time
 from Network import NoduleNet
 from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
-from data_trainning_primitive import Luna16Dataset,ToTensor
+import data
+# from data import Luna16Dataset,ToTensor
 # from data_trainning import Luna16Dataset, RandomCrop, RandomFlip, ToTensor
 from data_testing import Luna16DatasetTest
 import torch.optim as optim
@@ -14,8 +15,20 @@ import matplotlib
 
 
 if __name__ == '__main__':
-    # root_path = '/Users/hyacinth/Downloads/luna16/'
-    # cand_path = '/Users/hyacinth/Downloads/luna16/candidates.csv'
+
+    # Data augmentation and normalization for training
+    # Just normalization for validation
+    data_transforms = {
+        'train': transforms.Compose([
+            data.RandomCrop((36,36,36)),
+            data.RandomFlip((36,36,36)),
+            transforms.ToTensor(),
+        ]),
+        'val': transforms.Compose([
+            data.CenterCrop((20, 36, 36)),
+            transforms.ToTensor(),
+        ]),
+    }
 
     transformed_dataset = Luna16Dataset(csv_file=cand_path, root_dir=root_path, subset=[0],
                                         transform = transforms.Compose([ToTensor()]))
@@ -25,6 +38,7 @@ if __name__ == '__main__':
                                             transform=transforms.Compose(
                                                 [ToTensor()]))
     test_dataloader = DataLoader(transformed_dataset, batch_size=1, shuffle=True, num_workers=8)
+
 
     classes = {'Not Nodule', 'Is Nodule'}
 

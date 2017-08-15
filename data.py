@@ -84,13 +84,12 @@ class Luna16Dataset(Dataset):
                              for record in self.center_frame if file_exists(record, self.root_dir, subset)]
         pos = 0
         tot = 0
-        if phase == 'train':
-            for i in range(len(self.center_frame)):
-                tot += 1
-                if self.center_frame[i][4] == '1':
-                    pos += 1
-                    for _ in range(7):
-                        self.center_frame.append(self.center_frame[i])
+        for i in range(len(self.center_frame)):
+            tot += 1
+            if self.center_frame[i][4] == '1':
+                pos += 1
+                for _ in range(7):
+                    self.center_frame.append(self.center_frame[i])
         print('positive is: '+str(pos))
         print('total is: ' + str(tot))
         self.transform = transform
@@ -167,12 +166,24 @@ class RandomCrop(object):
         cube = cube[z:z+20, x:x+36, y:y+36]
         return {'cube':cube, 'label':label}
 
+class CenterCrop(object):
+    def __init__(self, output_size):
+        assert isinstance(output_size, (int, tuple))
+        if isinstance(output_size, int):
+            self.output_size = (20,output_size, output_size)
+        else:
+            assert len(output_size) == 3
+            self.output_size = output_size
+
+    def __call__(self, sample, z, x, y):
+        cube, label = sample['cube'], sample['label']
+        cube = cube[z:z+20, x:x+36, y:y+36]
+        return {'cube':cube, 'label':label}
+
 class ToTensor(object):
     def __call__(self, sample):
         cube, label = sample['cube'], sample['label']
         cube = np.expand_dims(cube,0)
-        # print('cube\' s size is '+str(cube.shape))
-        # print('label\' s type is ' + str(type(label)), file=f)
         return {'cube':torch.from_numpy(cube.copy()).float(), 'label': label}
 
 # flip = RandomFlip((20,36,36))
